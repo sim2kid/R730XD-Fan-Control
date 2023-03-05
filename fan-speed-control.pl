@@ -6,7 +6,7 @@ use List::MoreUtils qw( apply );
 use File::Temp qw(tempfile);
 
 my $static_speed_low=0x02;
-my $static_speed_high=0x12;   # this is the speed value at 100% demand
+my $static_speed_high=0x2D;   # this is the speed value at 100% demand
                               # ie what we consider the point we don't
                               # really want to get hotter but still
                               # tolerate
@@ -201,7 +201,7 @@ while () {
     # could just be a simple pipe, but hddtemp has a strong posibility
     # to be stuck in a D state, and hold STDERR open despite a kill
     # -9, so instead just send it to a tempfile, and read from that tempfile
-    system("timeout -k 1 20 hddtemp /dev/sd? /dev/nvme?n? | grep -v 'not available' > $tempfilename");
+    system("timeout -k 1 20 perl /usr/local/bin/hddtemp /dev/sd? /dev/nvme?n? | grep -v 'not available' > $tempfilename");
     @hddtemps=`cat < $tempfilename`;
   }
   if (!@ambient_ipmitemps) {
