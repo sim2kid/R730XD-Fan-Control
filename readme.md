@@ -29,15 +29,35 @@ believe it's only 26 in my un-air conditioned study).
 # installation (debian/proxmox)
 
 ```
+# Be sure apt is up-to-date.
+sudo apt update
 sudo apt install liblist-moreutils-perl lm-sensors ipmitool
 # I also use my own hddtemp, since debian's hddtemp itself is unmaintained and can't deal with SAS drives and often spins up drives that are spun down:
+# Note: hddtemp may not be installed on ProxMox 7+
 sudo apt remove hddtemp
 
 sudo cp -p fan-speed-control.pl /usr/local/bin
 sudo cp -p hddtemp /usr/local/bin
 sudo cp -p fan-speed-control.service /etc/systemd/system/fan-speed-control.service
+
+# Make sure files are executable
+chmod 666 /usr/local/bin/fan-speed-control.pl
+chmod 666 /usr/local/bin/hddtemp
+
 sudo systemctl daemon-reload
-sudo systemctl --now enable fan-speed-control.service
+sudo systemctl --now start fan-speed-control.service
+```
+
+Alternitivly, if you're moving the files from Windows like me, you can scp like so:
+```
+scp fan-speed-control.pl <user acct>@<server ip>:/usr/local/bin
+scp hddtemp <user acct>@<server ip>:/usr/local/bin
+scp fan-speed-control.service <user acct>@<server ip>:/etc/systemd/system/fan-speed-control.service
+```
+
+You can check the status of the service using the following command:
+```
+sudo systemctl status fan-speed-control.service
 ```
 
 [Reddit discussion](https://www.reddit.com/r/homelab/comments/ed6w7y)
